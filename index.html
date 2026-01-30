@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中史互動教室：五四運動（探究思考版）</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: "Microsoft JhengHei", "PingFang TC", sans-serif; background-color: #f3f4f6; }
+        
+        /* 動畫效果 */
+        .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* 思考區塊樣式 */
+        .thinking-box { background: linear-gradient(to right, #eff6ff, #fff); border-left: 5px solid #3b82f6; }
+        
+        /* 隱藏內容顯示動畫 */
+        .reveal-content { display: none; }
+        .reveal-content.show { display: block; animation: slideDown 0.5s ease-out; }
+        @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 1000px; } }
+        
+        /* 測驗樣式 */
+        .quiz-option { transition: all 0.2s; cursor: pointer; }
+        .quiz-option:hover { background-color: #e0f2fe; }
+        .quiz-option.selected-correct { background-color: #d1fae5; border-color: #10b981; color: #065f46; }
+        .quiz-option.selected-wrong { background-color: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .disabled { pointer-events: none; opacity: 0.7; }
+
+        /* 步驟圓點 */
+        .step-dot.active { background-color: #2563eb; color: white; border: 2px solid #bfdbfe; }
+        .step-dot.completed { background-color: #10b981; color: white; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-blue-900 text-white p-6 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold"><i class="fas fa-landmark mr-2"></i>五四運動：回顧與反思</h1>
+                <p class="text-blue-200 text-sm mt-1">中五級中國歷史科・互動研習單元</p>
+            </div>
+            <div class="mt-4 md:mt-0 bg-blue-800/50 px-4 py-2 rounded text-sm border border-blue-700">
+                <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>學習重點：評估運動成效
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-6">
+        
+        <aside class="w-full md:w-1/4">
+            <div class="bg-white rounded-xl shadow-md p-4 sticky top-28">
+                <nav class="space-y-2">
+                    <button onclick="switchTab('background')" id="btn-background" class="tab-btn w-full text-left px-4 py-3 rounded-lg font-semibold transition-all bg-blue-100 text-blue-800 border-l-4 border-blue-600">
+                        <i class="fas fa-search w-6"></i> 歷史背景 (探究)
+                    </button>
+                    <button onclick="switchTab('process')" id="btn-process" class="tab-btn w-full text-left px-4 py-3 rounded-lg font-semibold transition-all text-gray-600 hover:bg-gray-50 border-l-4 border-transparent">
+                        <i class="fas fa-fire w-6"></i> 經過與口號
+                    </button>
+                    <button onclick="switchTab('evaluation')" id="btn-evaluation" class="tab-btn w-full text-left px-4 py-3 rounded-lg font-semibold transition-all text-gray-600 hover:bg-gray-50 border-l-4 border-transparent">
+                        <i class="fas fa-balance-scale w-6"></i> 成敗評估 (思考)
+                    </button>
+                    <button onclick="switchTab('quiz')" id="btn-quiz" class="tab-btn w-full text-left px-4 py-3 rounded-lg font-semibold transition-all text-gray-600 hover:bg-gray-50 border-l-4 border-transparent">
+                        <i class="fas fa-pencil-alt w-6"></i> 知識挑戰 (8題)
+                    </button>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="w-full md:w-3/4">
+            
+            <div id="background" class="tab-content active bg-white p-8 rounded-xl shadow-md min-h-[500px]">
+                <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b pb-2">歷史檔案解密：山東問題的由來</h2>
+                <p class="mb-4 text-gray-600">請按順序點擊下方按鈕，逐步還原歷史真相：</p>
+                
+                <div class="flex justify-between mb-8 relative px-4">
+                    <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10"></div>
+                    <button onclick="setStep(1)" class="step-dot w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold active transition-all" id="dot-1">1</button>
+                    <button onclick="setStep(2)" class="step-dot w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold transition-all" id="dot-2">2</button>
+                    <button onclick="setStep(3)" class="step-dot w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold transition-all" id="dot-3">3</button>
+                    <button onclick="setStep(4)" class="step-dot w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold transition-all" id="dot-4">4</button>
+                </div>
+
+                <div class="bg-gray-50 rounded-xl p-6 border border-gray-200 min-h-[300px]">
+                    <div id="step-1" class="step-content block">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded text-sm font-bold">1898年</span>
+                            <h3 class="text-xl font-bold text-gray-800">德國強租膠州灣</h3>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            甲午戰爭後，<strong>德國</strong>藉口傳教士在山東被殺（巨野教案），強迫清廷租借<span class="text-red-600 font-bold">膠州灣</span>，並將整個山東劃入其勢力範圍。
+                        </p>
+                        <div class="text-right"><button onclick="setStep(2)" class="text-blue-600 hover:underline">下一步 <i class="fas fa-arrow-right"></i></button></div>
+                    </div>
+                    <div id="step-2" class="step-content hidden">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-indigo-600 text-white px-3 py-1 rounded text-sm font-bold">1914年</span>
+                            <h3 class="text-xl font-bold text-gray-800">日本趁機介入</h3>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            一戰爆發，<strong>日本</strong>藉口「英日同盟」對德宣戰。日本無視中國中立，出兵山東，擊敗德軍後，實際上<span class="text-red-600 font-bold">取代了德國在山東的特權</span>。
+                        </p>
+                        <div class="text-right"><button onclick="setStep(3)" class="text-blue-600 hover:underline">下一步 <i class="fas fa-arrow-right"></i></button></div>
+                    </div>
+                    <div id="step-3" class="step-content hidden">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded text-sm font-bold">1915-1918年</span>
+                            <h3 class="text-xl font-bold text-gray-800">政府外交失誤</h3>
+                        </div>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+                            <li><strong>袁世凱：</strong>接受<span class="font-bold text-red-600">「二十一條」</span>，承認日本繼承德國權益。</li>
+                            <li><strong>段祺瑞：</strong>因「西原借款」，對日本在山東權益表示<span class="font-bold text-red-600">「欣然同意」</span>。</li>
+                        </ul>
+                        <div class="text-right"><button onclick="setStep(4)" class="text-blue-600 hover:underline">下一步 <i class="fas fa-arrow-right"></i></button></div>
+                    </div>
+                    <div id="step-4" class="step-content hidden">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-red-600 text-white px-3 py-1 rounded text-sm font-bold">1919年</span>
+                            <h3 class="text-xl font-bold text-gray-800">導火線：巴黎和會</h3>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            中國以戰勝國身份參會，要求收回山東。但列強（英、法）決定將<strong>德國在山東權益轉交日本</strong>。消息傳回，舉國嘩然，五四運動爆發。
+                        </p>
+                        <div class="text-center mt-6">
+                            <button onclick="switchTab('process')" class="bg-red-600 text-white px-6 py-2 rounded-full shadow hover:bg-red-700 transition">進入運動經過</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="process" class="tab-content bg-white p-8 rounded-xl shadow-md">
+                <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b pb-2">運動經過與核心口號</h2>
+                <div class="bg-red-50 p-6 rounded-lg text-center border-2 border-red-100 mb-6">
+                    <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+                        <div class="text-4xl font-black text-red-800 tracking-widest">外爭主權</div>
+                        <div class="hidden md:block text-red-300 text-2xl">|</div>
+                        <div class="text-4xl font-black text-red-800 tracking-widest">內除國賊</div>
+                    </div>
+                    <p class="mt-4 text-gray-600 text-sm">其他口號：還我青島、廢除二十一條、誓死力爭</p>
+                </div>
+                <ul class="space-y-4 text-gray-700">
+                    <li class="flex items-start"><i class="fas fa-dot-circle text-blue-500 mt-1 mr-3"></i> <strong>5月4日：</strong>北京學生遊行，火燒趙家樓（曹汝霖宅），痛毆章宗祥。</li>
+                    <li class="flex items-start"><i class="fas fa-dot-circle text-blue-500 mt-1 mr-3"></i> <strong>6月：</strong>運動中心轉至上海，演變成學生、工人、商人聯合的「三罷」運動。</li>
+                </ul>
+            </div>
+
+            <div id="evaluation" class="tab-content bg-white p-8 rounded-xl shadow-md">
+                <h2 class="text-2xl font-bold text-blue-900 mb-2">多角度評估：五四運動成功了嗎？</h2>
+                <p class="text-gray-500 mb-8 text-sm">歷史分析不應只看表面。請先思考以下問題，再點擊查看詳細評估。</p>
+
+                <div class="mb-10 border rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-800 text-white px-6 py-3 font-bold text-lg flex justify-between items-center">
+                        <span>口號一：內除國賊</span>
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    
+                    <div class="p-6 thinking-box">
+                        <h4 class="font-bold text-blue-800 mb-3"><i class="fas fa-question-circle mr-2"></i>思考方向</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+                            <li>面對全國「三罷」（罷課、罷工、罷市）的壓力，北洋政府最終作出了什麼讓步？</li>
+                            <li>曹汝霖、陸宗輿、章宗祥這三個人的下場如何？</li>
+                            <li>但是，換了官員後，北洋軍閥的統治根基有改變嗎？</li>
+                        </ul>
+                        <div class="text-center mt-4">
+                            <button onclick="toggleEval('eval-1', this)" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow transition">
+                                我已思考，查看分析
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="eval-1" class="reveal-content bg-white border-t">
+                        <div class="grid md:grid-cols-2">
+                            <div class="p-6 bg-green-50 border-r border-gray-100">
+                                <h4 class="font-bold text-green-700 mb-2"><i class="fas fa-check"></i> 成功之處</h4>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    政府被迫屈服：
+                                    <br>1. 釋放被捕學生。
+                                    <br>2. 6月10日下令<strong>罷免曹、陸、章三人職務</strong>。
+                                    <br>這顯示了群眾力量成功迫使政府改變決策。
+                                </p>
+                            </div>
+                            <div class="p-6 bg-red-50">
+                                <h4 class="font-bold text-red-700 mb-2"><i class="fas fa-exclamation-triangle"></i> 局限與未竟</h4>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    <strong>治標不治本：</strong>
+                                    <br>雖然撤換了個別官員，但北洋軍閥依然掌權，媚外政策的政治土壤（軍閥割據、依附列強）並未根本消除。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6 border rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-800 text-white px-6 py-3 font-bold text-lg flex justify-between items-center">
+                        <span>口號二：外爭主權</span>
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    
+                    <div class="p-6 thinking-box">
+                        <h4 class="font-bold text-blue-800 mb-3"><i class="fas fa-question-circle mr-2"></i>思考方向</h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+                            <li>中國代表團在巴黎和會的最後時刻，做了一個什麼「破天荒」的決定？</li>
+                            <li>這個決定對於日本繼承山東權益有什麼法律上的影響？</li>
+                            <li>我們是否在1919年當年就立刻拿回了青島？如果沒有，是甚麼時候才拿回？</li>
+                        </ul>
+                        <div class="text-center mt-4">
+                            <button onclick="toggleEval('eval-2', this)" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow transition">
+                                我已思考，查看分析
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="eval-2" class="reveal-content bg-white border-t">
+                        <div class="grid md:grid-cols-2">
+                            <div class="p-6 bg-green-50 border-r border-gray-100">
+                                <h4 class="font-bold text-green-700 mb-2"><i class="fas fa-check"></i> 成功之處</h4>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    <strong>拒簽和約：</strong>
+                                    <br>中國代表團拒絕在對德和約上簽字。這打破了近代外交「始爭終讓」的慣例，保留了日後交涉的餘地，不承認日本權益的合法性。
+                                </p>
+                            </div>
+                            <div class="p-6 bg-red-50">
+                                <h4 class="font-bold text-red-700 mb-2"><i class="fas fa-exclamation-triangle"></i> 局限與未竟</h4>
+                                <p class="text-sm text-gray-700 leading-relaxed">
+                                    <strong>山東權益暫時懸空：</strong>
+                                    <br>當時並未即時收回主權。要等到1921-1922年的<strong>華盛頓會議</strong>，中日簽訂條約，日本才分期撤兵，中國贖回膠濟鐵路。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="quiz" class="tab-content bg-white p-8 rounded-xl shadow-md">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <h2 class="text-2xl font-bold text-blue-900">知識大挑戰</h2>
+                    <div class="text-right">
+                        <span id="score-display" class="text-xl font-bold text-blue-600">0</span> / 8 分
+                        <button onclick="resetQuiz()" class="ml-4 text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded text-gray-600">重置</button>
+                    </div>
+                </div>
+                <div class="space-y-8" id="quiz-container"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- 導航 ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-600');
+                btn.classList.add('text-gray-600', 'border-transparent');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('text-gray-600', 'border-transparent');
+            activeBtn.classList.add('bg-blue-100', 'text-blue-800', 'border-blue-600');
+        }
+
+        // --- 背景探究 ---
+        function setStep(step) {
+            // 隱藏所有內容
+            document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+            // 顯示當前內容
+            document.getElementById('step-' + step).classList.remove('hidden');
+            
+            // 更新圓點
+            for(let i=1; i<=4; i++) {
+                const dot = document.getElementById('dot-' + i);
+                dot.className = 'step-dot w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ';
+                if(i === step) {
+                    dot.className += 'bg-blue-600 text-white ring-4 ring-blue-100';
+                } else if (i < step) {
+                    dot.className += 'bg-green-500 text-white';
+                    dot.innerHTML = '<i class="fas fa-check"></i>';
+                } else {
+                    dot.className += 'bg-gray-300 text-gray-600';
+                    dot.innerHTML = i;
+                }
+            }
+        }
+
+        // --- 成敗評估顯示控制 ---
+        function toggleEval(id, btn) {
+            const content = document.getElementById(id);
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                btn.textContent = "我已思考，查看分析";
+            } else {
+                content.classList.add('show');
+                btn.textContent = "隱藏分析";
+            }
+        }
+
+        // --- 測驗系統 ---
+        const quizData = [
+            { q: "1. 五四運動爆發的直接導火線是甚麼？", options: ["A. 德國強佔膠州灣", "B. 巴黎和會外交失敗", "C. 華盛頓會議召開", "D. 袁世凱接受二十一條"], ans: 1, reason: "巴黎和會決定將德國在山東權益轉交日本，引發學生憤慨。" },
+            { q: "2. 五四運動口號「內除國賊」是指哪三人？", options: ["A. 袁世凱、段祺瑞、黎元洪", "B. 李大釗、陳獨秀、胡適", "C. 曹汝霖、陸宗輿、章宗祥", "D. 曾國藩、李鴻章、左宗棠"], ans: 2, reason: "學生針對的是涉嫌媚日外交的曹、陸、章三人。" },
+            { q: "3. 日本藉口甚麼理由在1914年出兵山東？", options: ["A. 維護世界和平", "B. 幫助中國收復領土", "C. 英日同盟", "D. 美日安保條約"], ans: 2, reason: "日本藉口履行「英日同盟」對德宣戰，實則奪取山東權益。" },
+            { q: "4. 關於五四運動的結果，下列哪項描述正確？", options: ["A. 政府拒簽和約，並罷免了有關官員", "B. 中國立刻收回了山東主權", "C. 政府強力鎮壓，運動完全失敗", "D. 日本主動歸還了青島"], ans: 0, reason: "政府最終讓步：釋放學生、罷免國賊、拒簽和約。" },
+            { q: "5. 五四運動後期，運動主力轉變為？", options: ["A. 農民", "B. 軍人", "C. 工人與商界", "D. 知識分子"], ans: 2, reason: "上海出現「三罷」，工人階級登上政治舞台。" },
+            { q: "6. 山東主權問題最終是在哪次會議解決？", options: ["A. 巴黎和會", "B. 華盛頓會議", "C. 開羅會議", "D. 雅爾塔會議"], ans: 1, reason: "直至1921-1922年華盛頓會議，中日簽訂條約才解決。" },
+            { q: "7. 哪項不是五四運動的影響？", options: ["A. 促成中共成立", "B. 婦女地位提高", "C. 思想解放", "D. 清朝復辟"], ans: 3, reason: "五四運動推動了新思潮，與清朝復辟無關。" },
+            { q: "8. 學生火燒趙家樓是為了尋找誰？", options: ["A. 曹汝霖", "B. 袁世凱", "C. 段祺瑞", "D. 蔡元培"], ans: 0, reason: "趙家樓是親日官員曹汝霖的住宅。" }
+        ];
+
+        let currentScore = 0;
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            currentScore = 0;
+            updateScore();
+
+            quizData.forEach((item, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'bg-gray-50 p-5 rounded-lg border border-gray-200';
+                let opts = '';
+                item.options.forEach((opt, idx) => {
+                    opts += `<div class="quiz-option p-3 border rounded bg-white mb-2" onclick="checkAnswer(${index}, ${idx}, this)">${opt}</div>`;
+                });
+                qDiv.innerHTML = `<p class="font-bold text-lg mb-3 text-gray-800">${item.q}</p><div class="space-y-2" id="opts-${index}">${opts}</div><div id="feed-${index}" class="hidden mt-3 text-sm p-3 rounded"></div>`;
+                container.appendChild(qDiv);
+            });
+        }
+
+        function checkAnswer(qIdx, optIdx, el) {
+            const parent = document.getElementById(`opts-${qIdx}`);
+            if(parent.classList.contains('answered')) return;
+            parent.classList.add('answered');
+            parent.querySelectorAll('.quiz-option').forEach(o => o.classList.add('disabled'));
+
+            const data = quizData[qIdx];
+            const feedback = document.getElementById(`feed-${qIdx}`);
+            
+            if(optIdx === data.ans) {
+                el.classList.add('selected-correct');
+                feedback.innerHTML = `<i class="fas fa-check-circle"></i> 答對了！<br><span class="text-gray-600">${data.reason}</span>`;
+                feedback.className = "block mt-3 text-sm p-3 rounded bg-green-100 text-green-800 border border-green-200";
+                currentScore++;
+            } else {
+                el.classList.add('selected-wrong');
+                parent.children[data.ans].classList.add('selected-correct');
+                feedback.innerHTML = `<i class="fas fa-times-circle"></i> 答錯了。<br><span class="text-gray-600">正確答案：${data.options[data.ans]}<br>${data.reason}</span>`;
+                feedback.className = "block mt-3 text-sm p-3 rounded bg-red-100 text-red-800 border border-red-200";
+            }
+            updateScore();
+        }
+
+        function updateScore() { document.getElementById('score-display').textContent = currentScore; }
+        function resetQuiz() { renderQuiz(); }
+        
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuiz();
+            setStep(1);
+        });
+    </script>
+</body>
+</html>
